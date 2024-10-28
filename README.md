@@ -6,6 +6,7 @@
 ### Description
 
 **MackCP** is an R package that implements Mack's estimator motivated by large exposure asymptotics in a compound Poisson setting. This package provides a suite of actuarial tools for claims reserving, loss development, and risk analysis. It aims to facilitate the analysis of insurance claims data and enhance the understanding of risk management practices in actuarial science.
+**Link** https://www.cambridge.org/core/journals/astin-bulletin-journal-of-the-iaa/article/macks-estimator-motivated-by-large-exposure-asymptotics-in-a-compound-poisson-setting/C1FC729CC7767F8B21F1AFD916E68C32
 
 ### Installation
 
