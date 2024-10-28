@@ -1,0 +1,9 @@
+# Exported functions
+export(mack_estimator)
+export(demo)
+export(comparison)
+
+# Import necessary functions from other packages
+importFrom(stats, rpois)
+importFrom(utils, head)
+importFrom(testthat, expect_equal)

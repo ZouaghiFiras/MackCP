@@ -1,0 +1,97 @@
+
+---
+title: "MackCP: An R Package for Mack's Estimator"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MackCP Vignette}
+  %\VignetteKeyword{R}
+  %\VignetteKeyword{Mack's Estimator}
+---
+
+# Introduction
+
+The `MackCP` package provides an implementation of Mack's estimator for calculating reserve estimates in insurance
+claims data. This vignette will guide you through the basic usage of the package, demonstrating how to use its primary functions.
+
+## Installation
+
+To install the package from GitHub, you can use the `devtools` package:
+
+```R
+# Install devtools if you haven't already
+install.packages("devtools")
+
+# Install MackCP from GitHub
+devtools::install_github("yourusername/MackCP")
+```
+
+## Example Dataset
+
+The package comes with a sample dataset called `RAA`. You can load it using the following command:
+
+```R
+data(RAA)
+head(RAA)
+```
+
+## Using Mack's Estimator
+
+### Step 1: Load the Package
+
+First, load the `MackCP` package:
+
+```R
+library(MackCP)
+```
+
+### Step 2: Estimate Reserves
+
+You can use the `mack_estimator` function to estimate reserves using the `RAA` dataset. Here's how to do it:
+
+```R
+# Estimating reserves using Mack's estimator
+estimates <- mack_estimator(RAA)
+print(estimates)
+```
+
+### Step 3: Comparing Results
+
+The package also provides functionality to compare the estimates with those obtained from other methods, such as the `ChainLadder` package. Here's an example:
+
+```R
+# Comparing results with ChainLadder
+comparison_results <- comparison(estimates)
+print(comparison_results)
+```
+
+## Utility Functions
+
+The `MackCP` package includes utility functions that can help in various tasks related to reserve estimation. For instance, you can use `utils_function_name()` to perform specific tasks (replace with actual utility function names).
+
+```R
+# Example utility function usage
+utility_result <- utils_function_name(arguments)
+print(utility_result)
+```
+
+## Demo Script
+
+To run a demo script showcasing the functionality of the package, you can execute the following command:
+
+```R
+demo("demo_script", package = "MackCP")
+```
+
+## Conclusion
+
+The `MackCP` package is designed to simplify the process of estimating reserves in insurance claims data using Mack's methodology. This vignette covered the installation, basic usage, and functionality of the package. For more advanced usage and examples, please refer to the documentation.
+
+## Further Reading
+
+For more information on Mack's estimator and related methodologies, consider reading the following resources:
+- Mack, T. (1993). Distribution-free calculation of the standard errors of reserve estimates.
+- ChainLadder package documentation for comparative methodologies.
+
+
