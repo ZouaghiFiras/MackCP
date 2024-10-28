@@ -18,7 +18,7 @@ install.packages("devtools")
 Then, install **MackCP**:
 
 ```R
-devtools::install_github("yourusername/MackCP")
+devtools::install_github("ZouaghiFiras/MackCP")
 ```
 
 ### Usage
