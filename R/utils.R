@@ -1,4 +1,6 @@
 # utils.R
+#' @importFrom stats qt
+#' @importFrom utils data
 
 #' Calculate Cumulative Triangle
 #'

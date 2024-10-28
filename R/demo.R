@@ -6,6 +6,8 @@
 #' It applies Mack's estimator motivated by large exposure asymptotics in a compound Poisson setting,
 #' compares the results with the ChainLadder package's Mack estimator, and provides a detailed comparison.
 #'
+#' @importFrom stats qt
+#' @importFrom utils data
 #' @import MackCP
 #' @import ChainLadder
 #' @examples

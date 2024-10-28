@@ -1,4 +1,6 @@
 # comparison.R
+#' @importFrom stats qt
+#' @importFrom utils data
 
 #' Compare MackCP Estimator with ChainLadder's Mack Estimator
 #'
@@ -21,32 +23,32 @@ compare_estimators <- function(data = RAA, MackCP_method, ChainLadder_method, ..
   if (is.null(data) || !inherits(data, "triangle")) {
     stop("The input dataset must be a claims triangle in the appropriate format.")
   }
-
+  
   # Apply MackCP's estimator on the dataset
   cat("Applying MackCP's implementation of the Mack Estimator...\n")
   mackcp_results <- MackCP_method(data, ...)
-
+  
   # Apply ChainLadder's Mack Estimator on the dataset
   cat("Applying ChainLadder's implementation of the Mack Estimator...\n")
   chainladder_results <- ChainLadder_method(data, ...)
-
+  
   # Extract relevant results from both methods
   mackcp_summary <- summary(mackcp_results)
   chainladder_summary <- summary(chainladder_results)
-
+  
   # Calculate comparison metrics (e.g., ultimate claims, standard errors, etc.)
   comparison_metrics <- list(
     UltimateClaimsDifference = mackcp_summary$Ultimate - chainladder_summary$Ultimate,
     StdErrorDifference = mackcp_summary$StdError - chainladder_summary$StdError
   )
-
+  
   # Output the comparison results
   cat("Comparison of MackCP and ChainLadder Results:\n")
   cat("Ultimate Claims (MackCP):\n", mackcp_summary$Ultimate, "\n")
   cat("Ultimate Claims (ChainLadder):\n", chainladder_summary$Ultimate, "\n")
   cat("Standard Errors (MackCP):\n", mackcp_summary$StdError, "\n")
   cat("Standard Errors (ChainLadder):\n", chainladder_summary$StdError, "\n")
-
+  
   # Return a list with detailed results and the comparison metrics
   return(list(
     MackCP_Results = mackcp_summary,

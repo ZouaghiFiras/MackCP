@@ -1,7 +1,14 @@
-# Exported functions
+# Export the main functions in your package
+export(compare_estimators)
+export(demo_MackCP)
 export(mack_estimator)
-export(demo)
-export(comparison)
+export(print.mack_estimator)
+export(summary.mack_estimator)
+export(calculate_cumulative_triangle)
+export(calculate_development_factors)
+
+# Import required packages
+importFrom(ChainLadder, MackChainLadder)
 
 # Import necessary functions from other packages
 importFrom(stats, rpois)

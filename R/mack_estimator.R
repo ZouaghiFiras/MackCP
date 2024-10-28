@@ -1,4 +1,6 @@
 # mack_estimator.R
+#' @importFrom stats qt
+#' @importFrom utils data
 
 #' Mack Estimator for Compound Poisson Setting
 #'

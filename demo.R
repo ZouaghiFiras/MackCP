@@ -6,6 +6,8 @@
 #'
 #' @examples
 #' demo()  # Run the demo
+#' @importFrom stats qt
+#' @importFrom utils data
 
 demo <- function() {
   # Load necessary libraries

@@ -1,45 +1,74 @@
 # Load necessary libraries
 library(testthat)
-library(MackCP)
 
-# Define test cases for the utility functions
-
-test_that("utility functions work as expected", {
-  # Example utility function: calculate_mean
-  calculate_mean <- function(x) {
-    if (length(x) == 0) return(NA)
-    return(mean(x, na.rm = TRUE))
-  }
-
-  # Test calculate_mean function
-  expect_equal(calculate_mean(c(1, 2, 3, 4, 5)), 3,
-               info = "calculate_mean should return the correct mean.")
-  expect_equal(calculate_mean(c(NA, 2, 3)), 2.5,
-               info = "calculate_mean should handle NA values correctly.")
-  expect_equal(calculate_mean(numeric(0)), NA,
-               info = "calculate_mean should return NA for empty input.")
+# Test the calculate_cumulative_triangle function
+test_that("calculate_cumulative_triangle returns expected results", {
+  # Create a sample incremental triangle
+  triangle <- matrix(c(100, 200, NA, 300, 400, 500, 600, 700, 800), nrow = 3, byrow = TRUE)
+  
+  # Calculate cumulative triangle
+  cumulative <- calculate_cumulative_triangle(triangle)
+  
+  # Expected cumulative triangle
+  expected_cumulative <- matrix(c(100, 300, 300, 300, 700, 800, 600, 1300, 800), nrow = 3, byrow = TRUE)
+  
+  # Check the structure and values of the result
+  expect_equal(cumulative, expected_cumulative, info = "Cumulative triangle should match expected results.")
+  expect_true(is.matrix(cumulative), info = "Output should be a matrix.")
+  expect_equal(dim(cumulative), dim(triangle), info = "Output dimensions should match input dimensions.")
 })
 
-test_that("other utility functions work as expected", {
-  # Example utility function: validate_triangle
-  validate_triangle <- function(data) {
-    if (!is.data.frame(data) || ncol(data) < 3) {
-      stop("Data must be a valid claims triangle.")
-    }
-    return(TRUE)
-  }
-
-  # Test validate_triangle function
-  expect_true(validate_triangle(data.frame(Development = c(1, 2), Origin = c(1, 1), Claims = c(100, 200))),
-              info = "validate_triangle should return TRUE for valid triangle data.")
-
-  expect_error(validate_triangle(data.frame(Development = c(1, 2))),
-               "Data must be a valid claims triangle.",
-               info = "validate_triangle should throw an error for invalid triangle data.")
-
-  expect_error(validate_triangle(NULL),
-               "Data must be a valid claims triangle.",
-               info = "validate_triangle should throw an error for NULL input.")
+test_that("calculate_cumulative_triangle handles invalid input gracefully", {
+  # Test with invalid data types
+  expect_error(calculate_cumulative_triangle("invalid"), 
+               "The input 'triangle' must be a matrix or a data frame.", 
+               info = "The function should throw an error for invalid input types.")
+  
+  # Test with empty matrix
+  empty_matrix <- matrix(numeric(0), nrow = 0, ncol = 0)
+  expect_error(calculate_cumulative_triangle(empty_matrix), 
+               "The input 'triangle' must have at least one row and one column.", 
+               info = "The function should throw an error for empty input matrix.")
+  
+  # Test with zero rows and columns
+  expect_error(calculate_cumulative_triangle(matrix(nrow = 0, ncol = 1)),
+               "The input 'triangle' must have at least one row and one column.", 
+               info = "The function should throw an error for zero rows.")
+  
+  expect_error(calculate_cumulative_triangle(matrix(nrow = 1, ncol = 0)),
+               "The input 'triangle' must have at least one row and one column.", 
+               info = "The function should throw an error for zero columns.")
 })
 
-# Add more tests for other utility functions as needed
+# Test the calculate_standard_error function
+test_that("calculate_standard_error returns expected results", {
+  # Create a sample cumulative triangle
+  cumulative_triangle <- matrix(c(100, 200, 300, 400, 500, 600), nrow = 2, byrow = TRUE)
+  
+  # Create ultimate claims
+  ultimate_claims <- c(300, 600)
+  
+  # Calculate standard error
+  std_error <- calculate_standard_error(ultimate_claims, cumulative_triangle)
+  
+  # Expected standard error
+  expected_std_error <- c(0, 0)  # Adjust this based on your understanding of the data
+  
+  # Check the result
+  expect_equal(std_error, expected_std_error, info = "Standard error should match expected results.")
+  expect_true(is.numeric(std_error), info = "Output should be numeric.")
+  expect_equal(length(std_error), ncol(cumulative_triangle), info = "Output length should match number of columns in cumulative triangle.")
+})
+
+test_that("calculate_standard_error handles invalid input gracefully", {
+  # Test with invalid ultimate claims
+  expect_error(calculate_standard_error("invalid", matrix(1:6, nrow = 2)),
+               "The input 'ultimate_claims' must be a numeric vector.",
+               info = "The function should throw an error for invalid ultimate claims input.")
+  
+  # Test with mismatched dimensions
+  expect_error(calculate_standard_error(c(1, 2), matrix(1:6, nrow = 3)),
+               "The length of 'ultimate_claims' must match the number of columns in 'cumulative_triangle'.",
+               info = "The function should throw an error for dimension mismatch.")
+})
+

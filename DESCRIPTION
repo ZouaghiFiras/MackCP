@@ -2,13 +2,9 @@ Package: MackCP
 Type: Package
 Title: Comprehensive Implementation of Mack's Estimator in a Compound Poisson Setting
 Version: 0.9.0
-Authors@R: c(
-    person("Firas", "Zouaghi",
+Authors@R: person("Firas", "Zouaghi",
            email = "firas.zouaghi@enicar.ucar.tn",
-           role = c("aut", "cre")),
-    person("Amira", "Majdoub",
-           role = "ctb")
-)
+           role = c("aut", "cre"))
 Description: A development release of MackCP, which offers an implementation of 
     Mack's estimator motivated by large exposure asymptotics in a compound 
     Poisson setting. This package provides actuarial tools for claims 
@@ -23,8 +19,10 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     stats,
-    utils
-RoxygenNote: 7.1.1
+    utils,
+    testthat,
+    ChainLadder
+RoxygenNote: 7.3.2
 References: 
     Engler N, Lindskog F. Mack’s estimator motivated by large exposure 
     asymptotics in a compound Poisson setting. *ASTIN Bulletin*. 2024;54(2):310-326. 
