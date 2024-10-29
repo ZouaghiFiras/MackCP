@@ -1,4 +1,3 @@
-# utils.R
 #' @importFrom stats qt
 #' @importFrom utils data
 
@@ -17,11 +16,14 @@
 #' print(cumulative_triangle)
 #' }
 calculate_cumulative_triangle <- function(triangle) {
+  # Check if the input is a matrix or a data frame
   if (!is.matrix(triangle) && !is.data.frame(triangle)) {
     stop("The input 'triangle' must be a matrix or a data frame.")
   }
-
-  apply(triangle, 2, cumsum)
+  
+  # Apply cumulative sum row-wise for each column
+  cumulative_triangle <- apply(triangle, 2, cumsum)
+  return(cumulative_triangle)
 }
 
 #' Calculate Development Factors
@@ -43,12 +45,16 @@ calculate_development_factors <- function(cumulative_triangle) {
   if (!is.matrix(cumulative_triangle) && !is.data.frame(cumulative_triangle)) {
     stop("The input 'cumulative_triangle' must be a matrix or a data frame.")
   }
-
-  dev_factors <- numeric(nrow(cumulative_triangle) - 1)
-  for (i in 1:(nrow(cumulative_triangle) - 1)) {
-    dev_factors[i] <- mean(cumulative_triangle[i + 1, ] / cumulative_triangle[i, ], na.rm = TRUE)
+  
+  # Initialize a vector to store the development factors
+  num_periods <- nrow(cumulative_triangle)
+  dev_factors <- numeric(num_periods - 1)
+  
+  # Loop over development periods to calculate factors
+  for (i in 1:(num_periods - 1)) {
+    dev_factors[i] <- sum(cumulative_triangle[i + 1, ] / cumulative_triangle[i, ], na.rm = TRUE) / sum(!is.na(cumulative_triangle[i, ]))
   }
-
+  
   return(dev_factors)
 }
 
@@ -75,14 +81,19 @@ calculate_standard_error <- function(ultimate_claims, cumulative_triangle) {
   if (!is.matrix(cumulative_triangle) && !is.data.frame(cumulative_triangle)) {
     stop("The input 'cumulative_triangle' must be a matrix or a data frame.")
   }
-
-  # Compute residuals based on differences between actual and estimated ultimate claims
-  residuals <- cumulative_triangle - ultimate_claims
-
+  
+  # Check if dimensions match
+  if (length(ultimate_claims) != ncol(cumulative_triangle)) {
+    stop("Length of 'ultimate_claims' must match the number of accident periods (columns) in 'cumulative_triangle'.")
+  }
+  
+  # Compute residuals as the difference between actual cumulative losses and estimated ultimate claims
+  residuals <- sweep(cumulative_triangle, 2, ultimate_claims, "-")
+  
   # Calculate standard error as the root mean squared error of residuals for each accident period
   std_error <- apply(residuals, 2, function(res) {
     sqrt(mean(res^2, na.rm = TRUE))
   })
-
+  
   return(std_error)
 }

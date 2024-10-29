@@ -2,11 +2,11 @@ library(testthat)
 library(MackCP)
 library(ChainLadder)
 
+# Load the RAA dataset from ChainLadder
+data("RAA", package = "ChainLadder")
+
 # Define test cases for the comparison between MackCP and ChainLadder Mack's estimator results
 test_that("Comparison between MackCP and ChainLadder results is consistent", {
-  # Load the RAA dataset from ChainLadder
-  data("RAA", package = "ChainLadder")
-  
   # Step 1: Use MackCP's mack_estimator function to calculate ultimate claims and standard errors
   mackcp_results <- mack_estimator(RAA)
   
@@ -20,7 +20,7 @@ test_that("Comparison between MackCP and ChainLadder results is consistent", {
   mackcp_se <- mackcp_results$standard_error
   
   # Step 2: Use ChainLadder's MackChainLadder function to calculate ultimate claims and standard errors
-  chainladder_results <- MackChainLadder(RAA, est.sigma = "Mack")
+  chainladder_results <- ChainLadder::MackChainLadder(RAA, est.sigma = "Mack")
   chainladder_ultimate <- chainladder_results$FullTriangle[, ncol(chainladder_results$FullTriangle)]
   chainladder_se <- chainladder_results$Mack.S.E
   
@@ -63,4 +63,23 @@ test_that("Demo results are as expected", {
               info = "Demo results should include 'standard_error'.")
   
   # Additional specific checks can be placed here based on known outcomes
+})
+
+# Edge case tests for invalid inputs
+test_that("MackCP handles NA values appropriately", {
+  # Test with a dataset containing NA values
+  data_with_na <- RAA
+  data_with_na[1, 1] <- NA  # Introduce NA values
+  expect_warning(mack_estimator(data_with_na),
+                 "NA values found in input data", 
+                 info = "MackCP should provide warnings for NA values.")
+})
+
+test_that("MackCP handles non-numeric data gracefully", {
+  # Test with a dataset containing non-numeric values
+  data_with_non_numeric <- RAA
+  data_with_non_numeric[1, 1] <- "string"  # Introduce non-numeric data
+  expect_error(mack_estimator(data_with_non_numeric),
+               "Input triangle must be numeric",
+               info = "Expected error message for non-numeric input.")
 })

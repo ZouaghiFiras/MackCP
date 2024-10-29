@@ -1,6 +1,4 @@
 # comparison.R
-#' @importFrom stats qt
-#' @importFrom utils data
 
 #' Compare MackCP Estimator with ChainLadder's Mack Estimator
 #'
@@ -18,18 +16,18 @@
 #' compare_estimators(data = RAA, MackCP_method = mack_estimator, ChainLadder_method = ChainLadder::MackChainLadder)
 #' }
 #' @export
-compare_estimators <- function(data = RAA, MackCP_method, ChainLadder_method, ...) {
+compare_estimators <- function(data, MackCP_method, ChainLadder_method, ...) {
   # Ensure that the data is in the required format
   if (is.null(data) || !inherits(data, "triangle")) {
     stop("The input dataset must be a claims triangle in the appropriate format.")
   }
   
   # Apply MackCP's estimator on the dataset
-  cat("Applying MackCP's implementation of the Mack Estimator...\n")
+  message("Applying MackCP's implementation of the Mack Estimator...")
   mackcp_results <- MackCP_method(data, ...)
   
   # Apply ChainLadder's Mack Estimator on the dataset
-  cat("Applying ChainLadder's implementation of the Mack Estimator...\n")
+  message("Applying ChainLadder's implementation of the Mack Estimator...")
   chainladder_results <- ChainLadder_method(data, ...)
   
   # Extract relevant results from both methods
@@ -43,11 +41,11 @@ compare_estimators <- function(data = RAA, MackCP_method, ChainLadder_method, ..
   )
   
   # Output the comparison results
-  cat("Comparison of MackCP and ChainLadder Results:\n")
-  cat("Ultimate Claims (MackCP):\n", mackcp_summary$Ultimate, "\n")
-  cat("Ultimate Claims (ChainLadder):\n", chainladder_summary$Ultimate, "\n")
-  cat("Standard Errors (MackCP):\n", mackcp_summary$StdError, "\n")
-  cat("Standard Errors (ChainLadder):\n", chainladder_summary$StdError, "\n")
+  message("Comparison of MackCP and ChainLadder Results:")
+  message("Ultimate Claims (MackCP):", paste(mackcp_summary$Ultimate, collapse = ", "), "\n")
+  message("Ultimate Claims (ChainLadder):", paste(chainladder_summary$Ultimate, collapse = ", "), "\n")
+  message("Standard Errors (MackCP):", paste(mackcp_summary$StdError, collapse = ", "), "\n")
+  message("Standard Errors (ChainLadder):", paste(chainladder_summary$StdError, collapse = ", "), "\n")
   
   # Return a list with detailed results and the comparison metrics
   return(list(

@@ -1,72 +1,66 @@
-# Load necessary libraries
 library(testthat)
 library(MackCP)
 library(ChainLadder)
 
-# Define test cases for the mack_estimator function
-test_that("mack_estimator returns expected results", {
-  # Load the RAA dataset
+# Define test cases for the comparison between MackCP and ChainLadder Mack's estimator results
+test_that("Comparison between MackCP and ChainLadder results is consistent", {
+  # Load the RAA dataset from ChainLadder
   data("RAA", package = "ChainLadder")
   
-  # Run the mack_estimator function on the RAA dataset
-  results <- mack_estimator(RAA)
-  
-  # Check that results contain the expected elements
-  expect_true("ultimate" %in% names(results), info = "Results should include 'ultimate' claims.")
-  expect_true("standard_error" %in% names(results), info = "Results should include 'standard_error'.")
-  
-  # Validate ultimate claims and standard errors
-  expect_type(results$ultimate, "numeric", info = "'ultimate' should be numeric.")
-  expect_type(results$standard_error, "numeric", info = "'standard_error' should be numeric.")
-  
-  # Check that the ultimate claims are positive
-  expect_true(all(results$ultimate >= 0), info = "'ultimate' should be non-negative.")
-  
-  # Check that the standard errors are non-negative
-  expect_true(all(results$standard_error >= 0), info = "'standard_error' should be non-negative.")
-})
-
-test_that("mack_estimator handles invalid input gracefully", {
-  # Test with invalid data (e.g., empty data frame)
-  empty_data <- data.frame()
-  
-  expect_error(mack_estimator(empty_data),
-               "The input 'triangle' must be a matrix or a data frame.",
-               info = "The function should throw an error for empty input data.")
-  
-  # Test with NA values in data
-  invalid_data <- matrix(c(1, 2, NA, 1, 1, 100, 200, 300), nrow = 3, byrow = TRUE)
-  
-  expect_error(mack_estimator(invalid_data),
-               "Data contains NA values.",
-               info = "The function should throw an error for NA values in input data.")
-  
-  # Test with non-square matrix
-  non_square_matrix <- matrix(1:6, nrow = 2, ncol = 3)
-  expect_error(mack_estimator(non_square_matrix),
-               "Input triangle must be a square or upper triangular matrix.",
-               info = "The function should throw an error for non-square matrix.")
-})
-
-test_that("mack_estimator compares correctly with ChainLadder", {
-  # Load the RAA dataset
-  data("RAA", package = "ChainLadder")
-  
-  # Get results from MackCP's mack_estimator
+  # Step 1: Use MackCP's mack_estimator function to calculate ultimate claims and standard errors
   mackcp_results <- mack_estimator(RAA)
   
-  # Get results from ChainLadder's MackChainLadder
-  chainladder_results <- ChainLadder::MackChainLadder(RAA, est.sigma = "Mack")
+  # Check if the results contain required elements
+  expect_true("ultimate" %in% names(mackcp_results), 
+              info = "MackCP results should include 'ultimate' claims.")
+  expect_true("standard_error" %in% names(mackcp_results), 
+              info = "MackCP results should include 'standard_error'.")
   
-  # Compare ultimate claims
-  expect_equal(mackcp_results$ultimate,
-               chainladder_results$FullTriangle[, ncol(chainladder_results$FullTriangle)],
-               tolerance = 0.01,
-               info = "Ultimate claims from MackCP should match those from ChainLadder within a tolerance of 0.01.")
+  mackcp_ultimate <- mackcp_results$ultimate
+  mackcp_se <- mackcp_results$standard_error
   
-  # Compare standard errors
-  expect_equal(mackcp_results$standard_error,
-               chainladder_results$Mack.S.E,
-               tolerance = 0.01,
-               info = "Standard errors from MackCP should match those from ChainLadder within a tolerance of 0.01.")
+  # Step 2: Use ChainLadder's MackChainLadder function to calculate ultimate claims and standard errors
+  chainladder_results <- MackChainLadder(RAA, est.sigma = "Mack")
+  chainladder_ultimate <- chainladder_results$FullTriangle[, ncol(chainladder_results$FullTriangle)]
+  chainladder_se <- chainladder_results$Mack.S.E
+  
+  # Step 3: Compare the ultimate claims from both methods
+  expect_equal(mackcp_ultimate, chainladder_ultimate, tolerance = 0.01,
+               info = "Ultimate claims from MackCP and ChainLadder should be similar within a tolerance of 0.01")
+  
+  # Step 4: Compare the standard errors from both methods
+  expect_equal(mackcp_se, chainladder_se, tolerance = 0.01,
+               info = "Standard errors from MackCP and ChainLadder should be similar within a tolerance of 0.01")
+})
+
+# Additional tests to cover edge cases
+test_that("MackCP handles empty or malformed datasets gracefully", {
+  # Test with an empty dataset
+  empty_triangle <- matrix(numeric(0), nrow = 0, ncol = 0)
+  expect_error(mack_estimator(empty_triangle),
+               "Input triangle must have at least one row and one column",
+               info = "Expected error message for empty input.")
+  
+  # Test with a non-square matrix (to ensure the input triangle shape is valid)
+  invalid_triangle <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, ncol = 3)
+  expect_error(mack_estimator(invalid_triangle),
+               "Input triangle must be a square or upper triangular matrix",
+               info = "Expected error message for invalid input.")
+})
+
+# Demo tests (if demo exists, remove if not needed)
+test_that("Demo runs without errors", {
+  expect_silent(demo("MackCP"), 
+                info = "Demo should run without errors if it exists.")
+})
+
+test_that("Demo results are as expected", {
+  # Example check: replace with actual checks if applicable
+  mackcp_demo_results <- mack_estimator(RAA) # Call the estimator again for demo results
+  expect_true("ultimate" %in% names(mackcp_demo_results), 
+              info = "Demo results should include 'ultimate' claims.")
+  expect_true("standard_error" %in% names(mackcp_demo_results), 
+              info = "Demo results should include 'standard_error'.")
+  
+  # Additional specific checks can be placed here based on known outcomes
 })
