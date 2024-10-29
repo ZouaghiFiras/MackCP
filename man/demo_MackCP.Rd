@@ -15,4 +15,5 @@ compares the results with the ChainLadder package's Mack estimator, and provides
 \dontrun{
 demo_MackCP()
 }
+
 }
